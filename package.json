@@ -1,0 +1,12 @@
+{
+  "name": "twindle",
+  "version": "0.0.1",
+  "main": "track.coffee",
+  "dependencies": {
+    "coffee-script": "*",
+    "twitter": "*",
+    "mongodb": "*",
+    "underscore": "*",
+    "git://github.com/jsoma/tabletop.git": "*"
+  }
+}
