@@ -8,6 +8,6 @@
     "pg": "*",
     "express": "*",
     "underscore": "*",
-    "git+http://github.com/jsoma/tabletop.git": "*"
+    "tabletop": "*"
   }
 }
