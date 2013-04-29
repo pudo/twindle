@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Twindle</title>
+  <!--link rel="stylesheet" href=""-->
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="page-header">Twindle Status</h1>
+    <div class="row">
+      <div class="span6">
+        <h3>Current feed</h3>
+        <div id="area-latest"></div>
+      </div>
+      <div class="span6">
+        <h3>Statistics</h3>
+        <div id="area-stats"></div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0-rc.3/handlebars.min.js"></script>
+  <script src="/js/status.js"></script>
+  <script id="tmpl-latest" type="text/x-handlebars-template">
+    {{#each statuses}}
+      <p>
+        <strong><a href="https://twitter.com/{{this.user.screen_name}}">{{this.user.screen_name}}</a></strong>
+        {{this.text}}
+        <a href="https://twitter.com/{{this.user.screen_name}}/status/{{this.id}}">&raquo;</a>
+      </p>
+    {{/each}}
+  </script>
+  <script id="tmpl-stats" type="text/x-handlebars-template">
+    <p>Total: {{status_count}} tweets, {{user_count}} users.</p>
+    <ul>
+      {{#each queries}}
+        <li>
+          {{#if this.is_follow}}
+            <a href="https://twitter.com/{{this.filter}}">{{this.filter}}</a>
+          {{/if}}
+          {{#if this.is_track}}
+            <code>{{this.filter}}</code>
+          {{/if}}
+        </li>
+      {{/each}}
+    </ul>
+  </script>
+</body>
+</html>
