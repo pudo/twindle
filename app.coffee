@@ -5,7 +5,6 @@ config = require './lib/config'
 _ = require 'underscore'
 
 
-
 storage = new storage_.Storage()
 tracker = new tracker_.Tracker(storage)
 tracker.track()
@@ -19,6 +18,8 @@ app.disable "x-powered-by"
 app.get '/stats', (req, res) ->
   storage.generateStatistics (stats) ->
     stats.queries = _.values tracker.queries
+    stats.follow = tracker.compose 'follow'
+    stats.track = tracker.compose 'track'
     res.jsonp 200, stats
 
 app.listen config.port
