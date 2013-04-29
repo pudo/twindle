@@ -18,6 +18,7 @@ $(function() {
   }
 
   setInterval(updatePage, 2000);
+  updatePage();
 });
 
 
