@@ -2,62 +2,138 @@ tabletop = require 'tabletop'
 _ = require 'underscore'
 config = require './config'
 twitter = require './twitter'
+events = require 'events'
 
 
-class TrackerManager
-  
+class Tracker
+
   constructor: () ->
-    @trackers = {}
-    @loadData()
     self = @
-    cb = () ->
-      self.loadData()
-    setInterval cb, 1500
+    @queries = {}
+    @events = new events.EventEmitter()
+    @feed =
+      track: {}
+      follow: {}
 
-  loadData: () ->
+    @events.on 'sub', (type, term) ->
+      self.subscribe type, term
+
+    @events.on 'unsub', (type, term) ->
+      self.unsubscribe type, term
+
+    @events.on 'update', () ->
+      self.updateStream()
+
+    @loadQueries()
+    cb = () ->
+      self.loadQueries()
+    setInterval cb, 5000
+
+  loadQueries: () ->
     cur = @
     tabletop.Tabletop.init
       key: config.gdoc_key
       simpleSheet: true
       callback: (d,h) ->
-        cur.handleData d, h
-    
-  handleData: (data, tabletop) ->
-    queries = _.pluck data, 'query'
-    for [query, tracker] in _.pairs @trackers
-      if -1 is queries.indexOf(query)
-        @trackers[query].quit()
-        delete @trackers[query]
-    for spec in data
-      if not @trackers[spec.query]?
-        @trackers[spec.query] = new Tracker spec.bucket, spec.query
-    
+        cur.handleQueries d, h
 
-class Tracker
+  handleQueries: (data, tabletop) ->
+    existing = _.keys @queries
+    queries = {}
+    for d in data
+      query = new Query @events, d
+      if query.key.length < 3
+        continue
+      queries[query.key] = query
+      if -1 is existing.indexOf query.key
+        query.trigger 'sub'
+    fresh = _.keys queries
+    for key in existing
+      if -1 is fresh.indexOf key
+        @queries[key].trigger 'unsub'
+    @queries = queries
 
-  constructor: (@bucket, @query) ->
-    console.log "Tracking: " + @query
-    @track()
-  
-  track: () ->
+  subscribe: (type, term) ->
+    if @feed[type][term]?
+      @feed[type][term]++
+    else
+      @feed[type][term] = 1
+
+  unsubscribe: (type, term) ->
+    if @feed[type][term]?
+      if @feed[type][term] > 1
+        @feed[type][term]--
+      else
+        delete @feed[type][term]
+
+  compose: (type) ->
+    terms = _.keys @feed[type]
+    if terms.length
+      terms = _.uniq terms
+      return terms.join ','
+
+  updateStream: () ->
     self = @
-    feed =
-      language: 'de'
-      track: @query
-    twitter.client.stream 'statuses/filter', feed, (stream) ->
-      self.stream = stream
-      stream.on 'data', (data) ->
-        self.handleData data
-      stream.on 'error', (data) ->
-        console.error data
-
-  handleData: (data) ->
-    console.log data.text
-  
-  quit: ->
-    console.log "Terminating: " + @query
     if @stream?
       @stream.destroy()
 
+    feed =
+      language: 'de'
+      follow: @compose 'follow'
+      track: @compose 'track'
 
-exports.TrackerManager = TrackerManager
+    if not feed.follow?
+      delete feed.follow
+    if not feed.track?
+      delete feed.track
+
+    console.log feed
+
+    twitter.client.stream 'statuses/filter', feed, (stream) ->
+      self.stream = stream
+      stream.on 'data', (data) ->
+        self.handleTweet data
+      stream.on 'error', (data) ->
+        console.error data
+
+  handleTweet: (data) ->
+    console.log data.text
+
+
+class Query
+
+  constructor: (@events, @data) ->
+    @key = '' + @data.type + '/' + @data.filter
+    @key = @key.trim()
+
+  track: (event) ->
+    for term in @data.filter.split ','
+      @events.emit event, 'track', term
+    @events.emit 'update'
+
+  follow: (event) ->
+    self = @
+    [owner, slug] = @data.filter.split '/'
+    query =
+      slug: slug
+      owner_screen_name: owner
+    getListMembers = (query, callback) ->
+      twitter.client.get '/lists/members.json', query, (data) ->
+        if data.users?
+          for user in data.users
+            self.events.emit event, 'follow', user.id_str
+        if not data.next_cursor? or data.next_cursor is 0
+          self.events.emit 'update'
+        else
+          query.cursor = data.next_cursor
+          getListMembers query
+    getListMembers query
+
+  trigger: (event) ->
+    if @data.type is 'track'
+      @track event
+    if @data.type is 'follow'
+      @follow event
+
+
+exports.Tracker = Tracker
