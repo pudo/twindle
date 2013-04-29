@@ -1,6 +1,8 @@
 assert = require 'assert'
 url = require 'url'
 
+console.log process.env
+
 exports.port = process.env.PORT or 3000
 
 exports.db_url = process.env.DB_URL or 'tcp://localhost/twitter'
