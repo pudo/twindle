@@ -1,7 +1,7 @@
 assert = require 'assert'
 url = require 'url'
 
-exports.mongodb_url = process.env.MONGODB_URL or 'mongodb://localhost:27017/twindle'
+exports.db_url = process.env.DB_URL or 'tcp://localhost/twitter'
 
 assert process.env.GOOGLESPREAD_KEY?, 'You must set a search config google doc in GOOGLESPREAD_KEY'
 exports.gdoc_key = process.env.GOOGLESPREAD_KEY

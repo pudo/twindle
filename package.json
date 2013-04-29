@@ -5,7 +5,7 @@
   "dependencies": {
     "coffee-script": "*",
     "twitter": "*",
-    "mongodb": "*",
+    "pg": "*",
     "underscore": "*",
     "git://github.com/jsoma/tabletop.git": "*"
   }
