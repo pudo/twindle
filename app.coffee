@@ -1,5 +1,8 @@
 
 tracker = require './lib/tracker'
+storage = require './lib/storage'
 
-tm = new tracker.Tracker()
+store = new storage.Storage()
+tm = new tracker.Tracker(store)
+
 #tm.loadData()

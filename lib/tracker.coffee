@@ -7,7 +7,7 @@ events = require 'events'
 
 class Tracker
 
-  constructor: () ->
+  constructor: (@storage) ->
     self = @
     @queries = {}
     @events = new events.EventEmitter()
@@ -92,12 +92,10 @@ class Tracker
     twitter.client.stream 'statuses/filter', feed, (stream) ->
       self.stream = stream
       stream.on 'data', (data) ->
-        self.handleTweet data
+        self.storage.saveStatus data
       stream.on 'error', (data) ->
         console.error data
 
-  handleTweet: (data) ->
-    console.log data.text
 
 
 class Query
