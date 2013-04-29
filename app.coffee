@@ -8,6 +8,7 @@ _ = require 'underscore'
 
 storage = new storage_.Storage()
 tracker = new tracker_.Tracker(storage)
+tracker.track()
 
 app = express()
 app.use express.logger()
@@ -21,3 +22,4 @@ app.get '/stats', (req, res) ->
     res.jsonp 200, stats
 
 app.listen config.port
+

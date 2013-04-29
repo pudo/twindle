@@ -24,6 +24,8 @@ class Tracker
     @events.on 'update', () ->
       self.updateStream()
 
+  track: () ->
+    self = @
     @loadQueries()
     cb = () ->
       self.loadQueries()
