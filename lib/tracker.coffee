@@ -80,7 +80,7 @@ class Tracker
       @stream.destroy()
 
     feed =
-      #language: 'de'
+      language: 'de,en'
       follow: @compose 'follow'
       track: @compose 'track'
 
