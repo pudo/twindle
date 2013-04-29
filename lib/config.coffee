@@ -1,6 +1,8 @@
 assert = require 'assert'
 url = require 'url'
 
+exports.port = process.env.PORT or 3000
+
 exports.db_url = process.env.DB_URL or 'tcp://localhost/twitter'
 
 assert process.env.GOOGLESPREAD_KEY?, 'You must set a search config google doc in GOOGLESPREAD_KEY'

@@ -133,5 +133,7 @@ class Query
     if @data.type is 'follow'
       @follow event
 
+  toJSON: () ->
+    @data
 
 exports.Tracker = Tracker

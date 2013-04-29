@@ -53,7 +53,18 @@ class Storage
       (err, result) ->
         if err?
           console.error err
-        console.log result
+        #console.log result
+
+  generateStatistics: (callback) ->
+    client = @client
+    stats = 
+      'system_status': 'ok'
+    client.query 'SELECT COUNT(id) AS num FROM status', (err, res) ->
+      stats.status_count = res.rows[0].num
+      client.query 'SELECT COUNT(id) AS num FROM "user"', (err, res) ->
+        stats.user_count = res.rows[0].num
+        callback stats
+
 
 
 exports.Storage = Storage
