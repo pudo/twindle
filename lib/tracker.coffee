@@ -80,7 +80,7 @@ class Tracker
       @stream.destroy()
 
     feed =
-      language: 'de'
+      language: 'de,en'
       follow: @compose 'follow'
       track: @compose 'track'
 
@@ -94,7 +94,10 @@ class Tracker
     twitter.client.stream 'statuses/filter', feed, (stream) ->
       self.stream = stream
       stream.on 'data', (data) ->
-        self.storage.saveStatus data
+        try
+          self.storage.saveStatus data
+        catch error
+          console.error error
       stream.on 'error', (data) ->
         console.error data
 

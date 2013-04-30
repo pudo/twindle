@@ -22,5 +22,9 @@ app.get '/stats', (req, res) ->
     stats.track = tracker.compose 'track'
     res.jsonp 200, stats
 
+app.get '/latest', (req, res) ->
+  storage.getLatest (statuses) ->
+    res.jsonp 200, statuses
+
 app.listen config.port
 
