@@ -44,7 +44,7 @@ class Tracker
     queries = {}
     for d in data
       query = new Query @events, d
-      if query.key.length < 3
+      if not query.valid()
         continue
       queries[query.key] = query
       if -1 is existing.indexOf query.key
@@ -108,6 +108,15 @@ class Query
   constructor: (@events, @data) ->
     @key = '' + @data.type + '/' + @data.filter
     @key = @key.trim()
+
+  valid: () ->
+    if -1 is ['follow', 'track'].indexOf @data.type
+      return false
+    if @data.filter.length < 2
+      return false
+    if @data.label.length < 2
+      return false
+    return true
 
   track: (event) ->
     for term in @data.filter.split ','
