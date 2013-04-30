@@ -55,8 +55,61 @@ CREATE TABLE status (
   lang VARCHAR(3)
 );
 
+---
 
 ALTER TABLE "user" ALTER COLUMN lang TYPE VARCHAR(100);
 ALTER TABLE "status" ALTER COLUMN lang TYPE VARCHAR(100);
 
+---
+
+ALTER TABLE "user" ADD COLUMN profile_background_color VARCHAR(100);
+ALTER TABLE "user" ADD COLUMN profile_background_image_url VARCHAR(1000);
+ALTER TABLE "user" ADD COLUMN profile_background_image_url_https VARCHAR(1000);
+ALTER TABLE "user" ADD COLUMN profile_background_tile BOOLEAN;
+ALTER TABLE "user" ADD COLUMN profile_image_url VARCHAR(1000);
+ALTER TABLE "user" ADD COLUMN profile_image_url_https VARCHAR(1000);
+ALTER TABLE "user" ADD COLUMN profile_banner_url VARCHAR(1000);
+ALTER TABLE "user" ADD COLUMN profile_link_color VARCHAR(100);
+ALTER TABLE "user" ADD COLUMN profile_sidebar_border_color VARCHAR(100);
+ALTER TABLE "user" ADD COLUMN profile_sidebar_fill_color VARCHAR(100);
+ALTER TABLE "user" ADD COLUMN profile_text_color VARCHAR(100);
+ALTER TABLE "user" ADD COLUMN profile_use_background_image VARCHAR(100);
+
+ALTER TABLE "status" ADD COLUMN geo_latitude FLOAT;
+ALTER TABLE "status" ADD COLUMN geo_longitude FLOAT;
+ALTER TABLE "status" ADD COLUMN place_full_name VARCHAR(2000);
+ALTER TABLE "status" ADD COLUMN place_country VARCHAR(1000);
+ALTER TABLE "status" ADD COLUMN place_id VARCHAR(2000);
+
+
+CREATE TABLE urls (
+  status_id BIGINT NOT NULL,
+  url VARCHAR(2000) NOT NULL,
+  expanded_url VARCHAR(2000),
+  display_url VARCHAR(2000),
+  index_begin INTEGER,
+  index_end INTEGER
+);
+
+CREATE TABLE user_mention (
+  status_id BIGINT NOT NULL,
+  screen_name VARCHAR(2000) NOT NULL,
+  name VARCHAR(2000),
+  id BIGINT,
+  id_str VARCHAR(2000),
+  index_begin INTEGER,
+  index_end INTEGER
+);
+
+CREATE TABLE hashtags (
+  status_id BIGINT NOT NULL,
+  text VARCHAR(2000) NOT NULL,
+  index_begin INTEGER,
+  index_end INTEGER
+);
+
+CREATE TABLE raw (
+  id BIGINT NOT NULL,
+  json TEXT
+);
 
