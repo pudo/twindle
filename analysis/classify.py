@@ -1,17 +1,20 @@
-from common import engine, threaded, tag_status
+from common import engine, threaded, tag_status, dedup_tags
 from pprint import pprint
 import sqlalchemy.sql.expression as sql
 import requests, re, csv
 from StringIO import StringIO
 
-REGEX_SHEET = 'https://docs.google.com/spreadsheet/pub?key=0AplklDf0nYxWdFhfSXNDdUtpVVkybjNKRDhTdUNzc3c&single=true&gid=1&output=csv'
+REGEX_SHEET = 'https://docs.google.com/spreadsheet/pub?key=0AplklDf0nYxWdEtCVEdfWG8tVk1pNHlKQktJUzJ1UkE&single=true&gid=0&output=csv'
+
 
 def get_rules():
     res = requests.get(REGEX_SHEET)
     rules = {}
     for row in csv.DictReader(StringIO(res.content)):
-        rule = re.compile(row.get('Regex'), re.I | re.M)
-        rules[(row.get('Field'), rule)] = row.get('Tag')
+        pprint(row)
+        rule = re.compile(row.get('Regex').decode('utf-8'), re.I | re.M)
+        rules[(row.get('Field'), rule)] = (row.get('Category').decode('utf-8'), 
+                                           row.get('Tag').decode('utf-8'))
     return rules
 
 
@@ -22,15 +25,17 @@ def classify_tweets():
     #engine.begin()
     q = status_tbl.join(user_tbl, user_tbl.c.id == status_tbl.c.user_id)
     q = sql.select([status_tbl, user_tbl], from_obj=q, use_labels=True)
+    q = q.where(user_tbl.c.lang == 'de')
     q = q.order_by(status_tbl.c.id.desc())
     for i, status in enumerate(engine.query(q)):
-        for (field, rule), tag in rules.items():
+        for (field, rule), (category, tag) in rules.items():
             m = rule.match(status.get(field))
             if m is not None:
-                tag_status(status, tag)
+                tag_status(status, category, tag)
         if i % 1000 == 0:
             print 'Processed: ', i
         #engine.commit()
+    dedup_tags()
 
 
 if __name__ == '__main__':
