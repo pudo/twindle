@@ -113,3 +113,9 @@ CREATE TABLE raw (
   json TEXT
 );
 
+DROP TABLE IF EXISTS tag;
+CREATE TABLE tag (
+  status_id BIGINT NOT NULL,
+  tag_text VARCHAR(200) NOT NULL,
+  created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL
+);
