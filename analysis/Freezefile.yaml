@@ -13,12 +13,20 @@ exports:
       SELECT t.tag, to_char(s.created_at, 'YYYY-MM-DD') AS day, COUNT(s.id)
         FROM status s LEFT JOIN tag t ON t.status_id = s.id
         WHERE t.category = 'Parteien'
-        GROUP BY t.tag, day;
+        GROUP BY t.tag, day ORDER BY day, t.tag;
     filename: parteien.csv
-    
+
   - query: >
       SELECT t.tag, to_char(s.created_at, 'YYYY-MM-DD') AS day, COUNT(s.id)
         FROM status s LEFT JOIN tag t ON t.status_id = s.id
         WHERE t.category = 'Themen'
-        GROUP BY t.tag, day;
+        GROUP BY t.tag, day ORDER BY day, t.tag;
     filename: themen.csv
+
+  - filename: hashtags_de.csv
+    query: >
+      SELECT h.text, COUNT(*) FROM hashtags h LEFT JOIN status s ON h.status_id = s.id
+      WHERE s.lang = 'de' GROUP BY h.text ORDER BY COUNT(*) DESC LIMIT 20; 
+
+  # German hashtags
+
