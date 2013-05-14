@@ -1,0 +1,24 @@
+# for use with http://dataset.rtfd.org
+
+common:
+  database: 'postgresql://localhost/spon_twitter'
+  prefix: 'export'
+  format: csv
+
+exports:
+  # Nach tag:
+  # SELECT t.tag, COUNT(s.id) FROM status s LEFT JOIN tag t ON t.status_id = s.id GROUP BY t.tag; 
+
+  - query: >
+      SELECT t.tag, to_char(s.created_at, 'YYYY-MM-DD') AS day, COUNT(s.id)
+        FROM status s LEFT JOIN tag t ON t.status_id = s.id
+        WHERE t.category = 'Parteien'
+        GROUP BY t.tag, day;
+    filename: parteien.csv
+    
+  - query: >
+      SELECT t.tag, to_char(s.created_at, 'YYYY-MM-DD') AS day, COUNT(s.id)
+        FROM status s LEFT JOIN tag t ON t.status_id = s.id
+        WHERE t.category = 'Themen'
+        GROUP BY t.tag, day;
+    filename: themen.csv
