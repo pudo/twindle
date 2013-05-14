@@ -12,7 +12,7 @@ def get_rules():
     rules = {}
     for row in csv.DictReader(StringIO(res.content)):
         pprint(row)
-        rule = re.compile(row.get('Regex').decode('utf-8'), re.I | re.M)
+        rule = re.compile(row.get('Regex').decode('utf-8'), re.M)
         rules[(row.get('Field'), rule)] = (row.get('Category').decode('utf-8'), 
                                            row.get('Tag').decode('utf-8'))
     return rules
@@ -29,7 +29,7 @@ def classify_tweets():
     q = q.order_by(status_tbl.c.id.desc())
     for i, status in enumerate(engine.query(q)):
         for (field, rule), (category, tag) in rules.items():
-            m = rule.match(status.get(field))
+            m = rule.search(unicode(status.get(field)).lower())
             if m is not None:
                 tag_status(status, category, tag)
         if i % 1000 == 0:
