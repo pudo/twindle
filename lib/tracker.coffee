@@ -54,6 +54,7 @@ class Tracker
       if -1 is fresh.indexOf key
         @queries[key].trigger 'unsub'
     @queries = queries
+    @storage.getMentioned @events
 
   subscribe: (type, term) ->
     if @feed[type][term]?
@@ -80,7 +81,7 @@ class Tracker
       @stream.destroy()
 
     feed =
-      language: 'de,en'
+      language: 'de'
       follow: @compose 'follow'
       track: @compose 'track'
 
