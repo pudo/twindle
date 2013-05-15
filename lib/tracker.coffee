@@ -54,7 +54,7 @@ class Tracker
       if -1 is fresh.indexOf key
         @queries[key].trigger 'unsub'
     @queries = queries
-    @storage.getMentioned @events
+    #@storage.getMentioned @events
 
   subscribe: (type, term) ->
     if @feed[type][term]?
