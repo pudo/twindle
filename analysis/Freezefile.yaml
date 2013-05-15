@@ -28,5 +28,20 @@ exports:
       SELECT h.text, COUNT(*) FROM hashtags h LEFT JOIN status s ON h.status_id = s.id
       WHERE s.lang = 'de' GROUP BY h.text ORDER BY COUNT(*) DESC LIMIT 20; 
 
+  - filename: parteien_laender.csv
+    query: >
+      SELECT d.tag, d.state, d.cnt, (d.cnt/s.total)*100 AS pct FROM 
+          (SELECT t.tag AS tag, l.state AS state, COUNT(DISTINCT s.id)::float AS cnt FROM status s
+              LEFT JOIN tag t ON t.status_id = s.id
+              LEFT JOIN "user" u ON u.id = s.user_id
+              LEFT JOIN locations l ON l.location = u.location
+              WHERE l.country_code = 'de' AND t.category = 'Parteien'
+              AND l.state IS NOT NULL
+              GROUP BY t.tag, l.state) AS d
+          LEFT JOIN (SELECT ls.state AS state, COUNT(*)::float as total FROM locations ls WHERE ls.country_code = 'de' GROUP BY ls.state) as s
+              ON d.state = s.state
+          ORDER BY pct DESC;
+
+
   # German hashtags
 

@@ -19,3 +19,24 @@ SELECT DISTINCT d.name AS name, d.id AS id FROM (
         FROM "user" u LEFT JOIN status s ON s.user_id = u.id
         GROUP BY u.screen_name, u.id HAVING COUNT(*) > 5
     ) AS d;
+
+
+
+
+SELECT d.tag, d.state, d.cnt, (d.cnt/s.total)*100 AS pct FROM 
+    (SELECT t.tag AS tag, l.state AS state, COUNT(DISTINCT s.id)::float AS cnt FROM status s
+        LEFT JOIN tag t ON t.status_id = s.id
+        LEFT JOIN "user" u ON u.id = s.user_id
+        LEFT JOIN locations l ON l.location = u.location
+        WHERE l.country_code = 'de' AND t.category = 'Parteien'
+        AND l.state IS NOT NULL
+        GROUP BY t.tag, l.state) AS d
+    LEFT JOIN (SELECT ls.state AS state, COUNT(*)::float as total FROM locations ls WHERE ls.country_code = 'de' GROUP BY ls.state) as s
+        ON d.state = s.state
+    ORDER BY pct DESC;
+
+
+
+
+SELECT state, COUNT(*) FROM locations WHERE country_code = 'de' GROUP BY state ORDER BY COUNT(*) DESC;
+SELECT city, COUNT(*) FROM locations WHERE country_code = 'de' GROUP BY city ORDER BY COUNT(*) DESC;
