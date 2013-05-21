@@ -3,8 +3,15 @@ import os
 from Queue import Queue
 from threading import Thread
 import logging
+import tweepy
 
 log = logging.getLogger(__name__)
+
+
+def tweepy_api():
+    auth = tweepy.OAuthHandler(os.environ.get('CONSUMER_KEY'), os.environ.get('CONSUMER_SECRET'))
+    auth.set_access_token(os.environ.get('ACCESS_TOKEN'), os.environ.get('ACCESS_SECRET'))
+    return tweepy.API(auth)
 
 
 def unthreaded(items, func):

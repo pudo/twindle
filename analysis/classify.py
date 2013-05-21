@@ -13,7 +13,7 @@ def get_rules():
     for row in csv.DictReader(StringIO(res.content)):
         pprint(row)
         rule = re.compile(row.get('Regex').decode('utf-8'), re.M)
-        rules[(row.get('Field'), rule)] = (row.get('Category').decode('utf-8'), 
+        rules[(row.get('Field'), rule)] = (row.get('Category').decode('utf-8'),
                                            row.get('Tag').decode('utf-8'))
     return rules
 
