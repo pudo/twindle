@@ -23,6 +23,7 @@ exports:
         GROUP BY t.tag, day ORDER BY day, t.tag;
     filename: themen.csv
 
+  # German hashtags
   - filename: hashtags_de.csv
     query: >
       SELECT h.text, COUNT(*) FROM hashtags h LEFT JOIN status s ON h.status_id = s.id
@@ -42,6 +43,75 @@ exports:
               ON d.state = s.state
           ORDER BY pct DESC;
 
+  #### Produktiv-Abfragen
+  - filename: parteien_erwaehnung_woche.csv
+    format: csv
+    query: >
+      SELECT t.tag, COUNT(s.id)
+        FROM status s LEFT JOIN tag t ON t.status_id = s.id
+        WHERE t.category = 'Parteien'
+          AND s.created_at > CURRENT_DATE - INTERVAL '1 WEEK'
+        GROUP BY t.tag;
 
-  # German hashtags
+  - filename: parteien_erwaehnung_woche.json
+    format: tabson
+    query: >
+      SELECT t.tag, COUNT(s.id)
+        FROM status s LEFT JOIN tag t ON t.status_id = s.id
+        WHERE t.category = 'Parteien'
+          AND s.created_at > CURRENT_DATE - INTERVAL '1 WEEK'
+        GROUP BY t.tag;
 
+  - filename: parteien_erwaehnung_zeitreihe.csv
+    format: csv
+    query: >
+      SELECT t.tag, to_char(s.created_at, 'YYYY-MM-DD') AS day, COUNT(s.id)
+        FROM status s LEFT JOIN tag t ON t.status_id = s.id
+        WHERE t.category = 'Parteien'
+          AND s.created_at > CURRENT_DATE - INTERVAL '4 WEEKS'
+        GROUP BY t.tag, to_char(s.created_at, 'YYYY-MM-DD');
+
+  - filename: parteien_erwaehnung_zeitreihe.json
+    format: tabson
+    query: >
+      SELECT t.tag, to_char(s.created_at, 'YYYY-MM-DD') AS day, COUNT(s.id)
+        FROM status s LEFT JOIN tag t ON t.status_id = s.id
+        WHERE t.category = 'Parteien'
+          AND s.created_at > CURRENT_DATE - INTERVAL '4 WEEKS'
+        GROUP BY t.tag, to_char(s.created_at, 'YYYY-MM-DD');
+
+  - filename: personen_erwaehnung_woche.csv
+    format: csv
+    query: >
+      SELECT t.tag, COUNT(s.id)
+        FROM status s LEFT JOIN tag t ON t.status_id = s.id
+        WHERE t.category = 'Personen'
+          AND s.created_at > CURRENT_DATE - INTERVAL '1 WEEK'
+        GROUP BY t.tag;
+
+  - filename: personen_erwaehnung_woche.json
+    format: tabson
+    query: >
+      SELECT t.tag, COUNT(s.id)
+        FROM status s LEFT JOIN tag t ON t.status_id = s.id
+        WHERE t.category = 'Personen'
+          AND s.created_at > CURRENT_DATE - INTERVAL '1 WEEK'
+        GROUP BY t.tag;
+
+  - filename: personen_erwaehnung_zeitreihe.csv
+    format: csv
+    query: >
+      SELECT t.tag, to_char(s.created_at, 'YYYY-MM-DD') AS day, COUNT(s.id)
+        FROM status s LEFT JOIN tag t ON t.status_id = s.id
+        WHERE t.category = 'Personen'
+          AND s.created_at > CURRENT_DATE - INTERVAL '4 WEEKS'
+        GROUP BY t.tag, to_char(s.created_at, 'YYYY-MM-DD');
+
+  - filename: personen_erwaehnung_zeitreihe.json
+    format: tabson
+    query: >
+      SELECT t.tag, to_char(s.created_at, 'YYYY-MM-DD') AS day, COUNT(s.id)
+        FROM status s LEFT JOIN tag t ON t.status_id = s.id
+        WHERE t.category = 'Personen'
+          AND s.created_at > CURRENT_DATE - INTERVAL '4 WEEKS'
+        GROUP BY t.tag, to_char(s.created_at, 'YYYY-MM-DD');
