@@ -4,5 +4,4 @@ lists:
 	python lists.py zeitonline_pol/bundestagsabgeordnete
 
 reports:
-	export SQLA_URL=`echo $DB_URL | sed 's/tcp:/postgresql:/g'`
-	datafreeze --db $SQLA_URL Freezefile.yaml
+	datafreeze --db $(shell echo "$(DB_URL)" | sed 's/tcp:/postgresql:/g') Freezefile.yaml
