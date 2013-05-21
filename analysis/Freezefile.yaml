@@ -115,3 +115,51 @@ exports:
         WHERE t.category = 'Personen'
           AND s.created_at > CURRENT_DATE - INTERVAL '4 WEEKS'
         GROUP BY t.tag, to_char(s.created_at, 'YYYY-MM-DD');
+
+  - filename: bundestagsabgeordnete_aktivitaet.csv
+    format: csv
+    query: >
+      SELECT l.screen_name, l.user_id, COUNT(DISTINCT s.id) as tweets, COUNT(r.id) AS retweeted
+          FROM lists l
+          LEFT JOIN status s ON s.user_id = l.user_id
+          LEFT JOIN status r ON r.retweeted_status_id = s.id
+          WHERE l.list_name = 'bundestagsabgeordnete'
+            AND s.created_at > CURRENT_DATE - INTERVAL '1 WEEK'
+          GROUP BY l.screen_name, l.user_id
+          ORDER BY COUNT(r.id) DESC;
+
+  - filename: bundestagsabgeordnete_aktivitaet.json
+    format: tabson
+    query: >
+      SELECT l.screen_name, l.user_id, COUNT(DISTINCT s.id) as tweets, COUNT(r.id) AS retweeted
+          FROM lists l
+          LEFT JOIN status s ON s.user_id = l.user_id
+          LEFT JOIN status r ON r.retweeted_status_id = s.id
+          WHERE l.list_name = 'bundestagsabgeordnete'
+            AND s.created_at > CURRENT_DATE - INTERVAL '1 WEEK'
+          GROUP BY l.screen_name, l.user_id
+          ORDER BY COUNT(r.id) DESC;
+
+  - filename: politikertreppe_aktivitaet.csv
+    format: csv
+    query: >
+      SELECT l.screen_name, l.user_id, COUNT(DISTINCT s.id) as tweets, COUNT(r.id) AS retweeted
+          FROM lists l
+          LEFT JOIN status s ON s.user_id = l.user_id
+          LEFT JOIN status r ON r.retweeted_status_id = s.id
+          WHERE l.list_name = 'Politikertreppe'
+            AND s.created_at > CURRENT_DATE - INTERVAL '1 WEEK'
+          GROUP BY l.screen_name, l.user_id
+          ORDER BY COUNT(r.id) DESC;
+
+  - filename: politikertreppe_aktivitaet.json
+    format: tabson
+    query: >
+      SELECT l.screen_name, l.user_id, COUNT(DISTINCT s.id) as tweets, COUNT(r.id) AS retweeted
+          FROM lists l
+          LEFT JOIN status s ON s.user_id = l.user_id
+          LEFT JOIN status r ON r.retweeted_status_id = s.id
+          WHERE l.list_name = 'Politikertreppe'
+            AND s.created_at > CURRENT_DATE - INTERVAL '1 WEEK'
+          GROUP BY l.screen_name, l.user_id
+          ORDER BY COUNT(r.id) DESC;
