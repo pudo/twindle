@@ -40,3 +40,22 @@ SELECT d.tag, d.state, d.cnt, (d.cnt/s.total)*100 AS pct FROM
 
 SELECT state, COUNT(*) FROM locations WHERE country_code = 'de' GROUP BY state ORDER BY COUNT(*) DESC;
 SELECT city, COUNT(*) FROM locations WHERE country_code = 'de' GROUP BY city ORDER BY COUNT(*) DESC;
+
+
+      SELECT t.tag, to_char(s.created_at, 'YYYY-MM-DD') AS day, COUNT(s.id)
+        FROM status s LEFT JOIN tag t ON t.status_id = s.id
+        WHERE t.category = 'Personen'
+        GROUP BY t.tag, day ORDER BY day, t.tag;
+
+
+
+
+SELECT l.screen_name, l.user_id, COUNT(s.id), SUM(s.retweet_count), SUM(s.favorite_count)
+    FROM lists l LEFT JOIN status s ON s.user_id = l.user_id
+    WHERE l.list_name = 'Politikertreppe'
+    GROUP BY l.screen_name, l.user_id;
+
+SELECT COUNT(s.id), SUM(s.retweet_count), SUM(s.favorite_count)
+    FROM lists l LEFT JOIN status s ON s.user_id = l.user_id
+    WHERE l.list_name = 'Politikertreppe';
+    GROUP BY l.screen_name, l.user_id;

@@ -90,23 +90,23 @@ class Storage
     for mention in status.entities.user_mentions
       @saveMention status.id, mention
 
-    #console.log util.inspect status.entities
+    #console.log util.inspect status.retweeted_status
 
     @saveUser status.user
     @client.query 'INSERT INTO "status" (id, id_str, created_at, text, source, truncated,
       in_reply_to_status_id, in_reply_to_status_id_str, in_reply_to_user_id,
       in_reply_to_user_id_str, in_reply_to_screen_name, user_id, retweet_count,
       favorite_count, favorited, retweeted, possibly_sensitive, filter_level, lang,
-      geo_latitude, geo_longitude, place_id, place_full_name, place_country) VALUES 
-      ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18,
-      $19, $20, $21, $22, $23, $24)',
+      geo_latitude, geo_longitude, place_id, place_full_name, place_country,
+      retweeted_status_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
+      $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)',
       [status.id, status.id_str, new Date(status.created_at), status.text, status.source,
       status.truncated, status.in_reply_to_status_id, status.in_reply_to_status_id_str,
       status.in_reply_to_user_id, status.in_reply_to_user_id_str, status.in_reply_to_screen_name,
       status.user.id, status.retweet_count, status.favorite_count, status.favorited,
       status.retweeted, status.possibly_sensitive, status.filter_level, status.lang, 
       status.geo?.coordinates?[0], status.geo?.coordinates?[1], status.place?.id,
-      status.place?.full_name, status.place?.country],
+      status.place?.full_name, status.place?.country, status.retweeted_status?.id],
       (err, result) ->
         if err?
           console.error err

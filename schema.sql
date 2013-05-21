@@ -121,3 +121,6 @@ CREATE TABLE tag (
   category VARCHAR(200) NOT NULL,
   classified_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL
 );
+
+
+ALTER TABLE "status" ADD COLUMN retweeted_status_id BIGINT;
