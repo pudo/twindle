@@ -83,13 +83,15 @@ class Storage
           console.log err
 
   saveStatus: (status) ->
-    if status.entities?
-      for url in status.entities.urls
-        @saveUrl status.id, url
-      for hashtag in status.entities.hashtags
-        @saveHashtag status.id, hashtag
-      for mention in status.entities.user_mentions
-        @saveMention status.id, mention
+    if not status.id?
+      return
+      
+    for url in status.entities.urls
+      @saveUrl status.id, url
+    for hashtag in status.entities.hashtags
+      @saveHashtag status.id, hashtag
+    for mention in status.entities.user_mentions
+      @saveMention status.id, mention
 
     #console.log util.inspect status.retweeted_status
 
