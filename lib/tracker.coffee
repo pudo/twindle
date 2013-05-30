@@ -33,7 +33,7 @@ class Tracker
 
   loadQueries: () ->
     cur = @
-    tabletop.Tabletop.init
+    tabletop.init
       key: config.gdoc_key
       simpleSheet: true
       callback: (d,h) ->
