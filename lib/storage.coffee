@@ -7,7 +7,7 @@ _ = require 'underscore'
 class Storage
 
   constructor: () ->
-    @client = new pg.native.Client config.db_url
+    @client = new pg.Client config.db_url
     @client.connect (err) ->
       if err?
         console.error err
