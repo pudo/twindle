@@ -1,4 +1,4 @@
-[program:twindle.pudo.org]
+[program:twindle]
 command=/usr/local/bin/coffee app.coffee
 directory=/var/www/twindle.pudo.org/app
 environment=
@@ -9,7 +9,7 @@ environment=
   CONSUMER_SECRET=...,
   ACCESS_TOKEN=...,
   ACCESS_SECRET=...
-user=www-data
+user=ubuntu
 autostart=true
 autorestart=true
 stdout_logfile=/var/www/twindle.pudo.org/logs/supervisord.log
