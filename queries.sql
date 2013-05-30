@@ -50,12 +50,22 @@ SELECT city, COUNT(*) FROM locations WHERE country_code = 'de' GROUP BY city ORD
 
 
 
-SELECT l.screen_name, l.user_id, COUNT(s.id), SUM(s.retweet_count), SUM(s.favorite_count)
-    FROM lists l LEFT JOIN status s ON s.user_id = l.user_id
-    WHERE l.list_name = 'Politikertreppe'
-    GROUP BY l.screen_name, l.user_id;
+SELECT l.screen_name, l.user_id, COUNT(DISTINCT s.id) as tweets, COUNT(r.id) AS retweeted
+    FROM lists l
+    LEFT JOIN status s ON s.user_id = l.user_id
+    LEFT JOIN status r ON r.retweeted_status_id = s.id
+    WHERE l.list_name = 'bundestagsabgeordnete'
+    GROUP BY l.screen_name, l.user_id
+    ORDER BY COUNT(r.id) DESC;
 
 SELECT COUNT(s.id), SUM(s.retweet_count), SUM(s.favorite_count)
     FROM lists l LEFT JOIN status s ON s.user_id = l.user_id
     WHERE l.list_name = 'Politikertreppe';
-    GROUP BY l.screen_name, l.user_id;
+
+
+SELECT t.screen_name, s.user_id, COUNT(DISTINCT s.id), COUNT(r.id) AS retweets
+    FROM status s
+    LEFT JOIN "user" t ON t.id = s.user_id
+    LEFT JOIN status r ON r.retweeted_status_id = s.id
+    GROUP BY s.user_id, t.screen_name
+    ORDER BY COUNT(r.id) DESC LIMIT 10;
