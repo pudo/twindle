@@ -10,9 +10,9 @@ exports.createApp = (storage) ->
 
     app.get '/stats', (req, res) ->
       storage.generateStatistics (stats) ->
-        stats.queries = _.values tracker.queries
-        stats.follow = tracker.compose 'follow'
-        stats.track = tracker.compose 'track'
+        #stats.queries = _.values tracker.queries
+        #stats.follow = tracker.qs.follows.length
+        #stats.track = tracker.qs.tracks.length
         res.jsonp 200, stats
 
     app.get '/latest', (req, res) ->
