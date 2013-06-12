@@ -45,7 +45,8 @@ SELECT city, COUNT(*) FROM locations WHERE country_code = 'de' GROUP BY city ORD
       SELECT t.tag, to_char(s.created_at, 'YYYY-MM-DD') AS day, COUNT(s.id)
         FROM status s LEFT JOIN tag t ON t.status_id = s.id
         WHERE t.category = 'Personen'
-        GROUP BY t.tag, day ORDER BY day, t.tag;
+        GROUP BY t.tag, day ORDER BY day, t.tag
+        ORDER BY COUNT(s.id) DESC LIMIT 20;
 
 
 

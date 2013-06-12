@@ -2,7 +2,7 @@
 from fabric.api import *
 
 env.hosts = ['twindle.pudo.org']
-env.key_filename = '/Users/lindenbergf/ec2/spon_ec2.pem'
+env.key_filename = '/Users/fl/.ssh/spon_ec2.pem'
 env.user = 'ubuntu'
 deploy_dir = '/home/ubuntu/twindle/'
 backup_dir = '/home/ubuntu/backup'
@@ -10,11 +10,15 @@ backup_dir = '/home/ubuntu/backup'
 
 def deploy():
     run('mkdir -p ' + backup_dir)
-    run('pg_dump -f ' + backup_dir + '/twindle-`date +%Y%m%d`.sql twindle')
+    #run('pg_dump -f ' + backup_dir + '/twindle-`date +%Y%m%d`.sql twindle')
     with cd(deploy_dir + 'app'):
         run('git pull')
         run('git reset --hard HEAD')
         run('npm install .')
+    with cd(deploy_dir):
+        run('rm -rf env')
+        run('virtualenv env')
+        run('env/bin/pip install -r app/analysis/requirements.txt')
     sudo('supervisorctl reread')
     sudo('supervisorctl reload')
 
