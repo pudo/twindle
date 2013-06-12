@@ -5,7 +5,7 @@ exports.createApp = (storage) ->
     app = express()
     app.use express.logger()
     app.use express.errorHandler()
-    app.use express.static __dirname + '/static'
+    app.use express.static __dirname + '/../static'
     app.disable "x-powered-by"
 
     app.get '/stats', (req, res) ->
