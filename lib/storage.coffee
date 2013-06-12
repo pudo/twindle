@@ -82,10 +82,7 @@ class Storage
         if err?
           console.log err
 
-  saveStatus: (status) ->
-    if not status.id?
-      return
-      
+  saveStatus: (status, callback) ->
     for url in status.entities.urls
       @saveUrl status.id, url
     for hashtag in status.entities.hashtags
@@ -113,6 +110,7 @@ class Storage
       (err, result) ->
         if err?
           console.error err
+        callback result
 
     @client.query 'INSERT INTO "raw" (id, json) VALUES ($1, $2)', [status.id, JSON.stringify(status)],
       (err, result) ->
@@ -164,7 +162,7 @@ class Storage
       UNION SELECT u.screen_name AS name, u.id AS id
         FROM "user" u LEFT JOIN status s ON s.user_id = u.id
         GROUP BY u.screen_name, u.id HAVING COUNT(*) > 5
-      ) AS d'
+      ) AS d LIMIT 80000'
     q.on 'row', (row) ->
       em.emit 'sub', 'follow', row.id
     q.on 'end', () ->
