@@ -154,7 +154,7 @@ class Storage
       ORDER BY s.created_at DESC LIMIT 20', (err, res) ->
         callback (self.unfoldStatus r for r in res.rows)
 
-  getMentioned: (em) ->
+  getMentioned: (qs, callback) ->
     q = @client.query 'SELECT DISTINCT d.name AS name, d.id AS id FROM (
       SELECT m.screen_name AS name, m.id AS id
         FROM "user_mention" m LEFT JOIN status s ON m.status_id = s.id
@@ -164,9 +164,9 @@ class Storage
         GROUP BY u.screen_name, u.id HAVING COUNT(*) > 5
       ) AS d LIMIT 80000'
     q.on 'row', (row) ->
-      em.emit 'sub', 'follow', row.id
+      qs.follow ''+row.id
     q.on 'end', () ->
-      em.emit 'update'
+      callback()
 
 
 

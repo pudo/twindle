@@ -8,6 +8,8 @@
     "pg": "*",
     "express": "*",
     "underscore": "*",
-    "tabletop": "*"
+    "tabletop": "*",
+    "amqp": "*",
+    "async": "*"
   }
 }
