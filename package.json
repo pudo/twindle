@@ -9,7 +9,6 @@
     "express": "*",
     "underscore": "*",
     "tabletop": "*",
-    "amqp": "*",
-    "async": "*"
+    "amqp": "*"
   }
 }

@@ -73,7 +73,6 @@ class Tracker
 
   constructor: (@storage) ->
     self = @
-    @events = new events.EventEmitter()
 
   track: () ->
     self = @

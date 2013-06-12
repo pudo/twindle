@@ -2,6 +2,7 @@
 amqp = require 'amqp'
 config = require './config'
 
+
 connect = (callback) ->
     connection = amqp.createConnection
         url: config.amqp_url
@@ -9,12 +10,15 @@ connect = (callback) ->
     connection.on 'ready', () ->
         queue = connection.queue config.amqp_queue
         callback connection, queue
+    connection.on 'error', (e) ->
+        console.log e
 
 exports.consume = (storage) ->
     connect (connection, queue) ->
         queue.subscribe {ack: true}, (message, headers, deliveryInfo) ->
             storage.saveStatus message, (ret) ->
                 queue.shift()
+
 
 class QueuedStorage extends Storage
 
