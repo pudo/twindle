@@ -9,12 +9,9 @@ class Tracker
 
   constructor: (@storage) ->
     self = @
-    @queries = {}
+    @reset()
     @events = new events.EventEmitter()
-    @feed =
-      track: {}
-      follow: {}
-
+    
     @events.on 'sub', (type, term) ->
       self.subscribe type, term
 
@@ -24,12 +21,23 @@ class Tracker
     @events.on 'update', () ->
       self.updateStream()
 
+  reset: () ->
+    @queries = {}
+    @feed =
+      track: {}
+      follow: {}
+
   track: () ->
     self = @
     @loadQueries()
     cb = () ->
       self.loadQueries()
     setInterval cb, 5000
+
+    reset = () ->
+      self.reset()
+      self.loadQueries()
+    setInterval reset, 1000 * 60 * 60
 
   loadQueries: () ->
     cur = @
@@ -54,7 +62,7 @@ class Tracker
       if -1 is fresh.indexOf key
         @queries[key].trigger 'unsub'
     @queries = queries
-    #@storage.getMentioned @events
+    @storage.getMentioned @events
 
   subscribe: (type, term) ->
     if @feed[type][term]?
@@ -77,30 +85,43 @@ class Tracker
 
   updateStream: () ->
     self = @
-    if @stream?
-      @stream.destroy()
+    #if @stream?
+    #  @stream.destroy()
 
     feed =
-    #  language: 'de'
+      language: 'de'
       follow: @compose 'follow'
       track: @compose 'track'
+      #track: 'hochwasser,und,wir,deutschland'
+
+    console.log "\nUpdated stream configuration."
+    console.log "> Following " + (_.keys @feed['follow']).length + " users..."
+    console.log "> Tracking " + (_.keys @feed['track']).length + " terms..."
 
     if not feed.follow?
       delete feed.follow
     if not feed.track?
       delete feed.track
 
-    console.log feed
-
     twitter.client.stream 'statuses/filter', feed, (stream) ->
       self.stream = stream
       stream.on 'data', (data) ->
         try
-          self.storage.saveStatus data
+          if not data.id?
+            console.error data
+          else
+            self.storage.saveStatus data, (nop) ->
         catch error
           console.error error
       stream.on 'error', (data) ->
+        error = '' + data
+        #if error.indexOf('ECONNRESET') != -1
         console.error data
+        #  self.updateStream()
+      #stream.on 'end', () ->
+      #  console.log data
+      #  #self.stream = null
+      #  #self.updateStream()
 
 
 
