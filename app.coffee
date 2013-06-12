@@ -1,30 +1,12 @@
-express = require 'express'
-tracker_ = require './lib/tracker'
-storage_ = require './lib/storage'
+{Tracker} = require './lib/tracker'
+{Storage} = require './lib/storage'
 config = require './lib/config'
-_ = require 'underscore'
+{createApp} = require './lib/web'
 
-
-storage = new storage_.Storage()
-tracker = new tracker_.Tracker(storage)
+storage = new Storage()
+tracker = new Tracker(storage)
 tracker.track()
 
-app = express()
-app.use express.logger()
-app.use express.errorHandler()
-app.use express.static __dirname + '/static'
-app.disable "x-powered-by"
-
-app.get '/stats', (req, res) ->
-  storage.generateStatistics (stats) ->
-    stats.queries = _.values tracker.queries
-    stats.follow = tracker.compose 'follow'
-    stats.track = tracker.compose 'track'
-    res.jsonp 200, stats
-
-app.get '/latest', (req, res) ->
-  storage.getLatest (statuses) ->
-    res.jsonp 200, statuses
-
+app = createApp(storage)
 app.listen config.port
 
