@@ -9,4 +9,5 @@ reports:
 dumpraw:
 	mkdir -p dumps
 	python dumpraw.py
-	s3cmd put dumps/* s3://twindle-raw.pudo.org && rm -f dumps/*
+	s3cmd put dumps/* s3://data.twindle.pudo.org/raw/ && rm -f dumps/*
+

@@ -14,6 +14,7 @@ def dump_batches():
         return False
     data, min_id = [], None
     log.info("Fetching %s raw tweets...", BATCH_SIZE)
+    engine.begin()
     for row in table.find(_limit=BATCH_SIZE, order_by=['id']):
         if min_id is None:
             min_id = row['id']
@@ -23,6 +24,7 @@ def dump_batches():
     fh = open('dumps/raw_%s.json' % min_id, 'wb')
     json.dump(data, fh)
     fh.close()
+    engine.commit()
     return True
 
 
