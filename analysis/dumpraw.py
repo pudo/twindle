@@ -30,4 +30,3 @@ if __name__ == '__main__':
     while True:
         if not dump_batches():
             break
-    engine.query('VACUUM FULL raw;')
