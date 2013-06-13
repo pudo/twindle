@@ -5,7 +5,7 @@ from common import engine
 log = logging.getLogger(__name__)
 table = engine.get_table('raw')
 
-BATCH_SIZE = 50000
+BATCH_SIZE = 5000
 
 
 def dump_batches():
