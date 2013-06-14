@@ -16,7 +16,7 @@ def dump_batches():
     data, min_id, max_id = [], None, 0
     log.info("Fetching %s raw tweets...", BATCH_SIZE)
     engine.begin()
-    for row in list(raw_table.find(_limit=BATCH_SIZE, order_by=['id'])):
+    for row in raw_table.find(_limit=BATCH_SIZE, order_by=['id']):
         if min_id is None:
             min_id = row['id']
         data.append(json.loads(row['json']))
