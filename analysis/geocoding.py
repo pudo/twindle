@@ -53,7 +53,7 @@ def geocode_locations():
     q = """SELECT DISTINCT TRIM(LOWER(u.location)) AS loc FROM "user" u
         LEFT OUTER JOIN locations lx ON lx.location = TRIM(LOWER(u.location))
         WHERE u.location IS NOT NULL AND lx.location IS NULL;"""
-    for location in engine.query(q):
+    for location in list(engine.query(q)):
         geocode_location(location)
     #locations = list(engine.query(q))
     #print q, ' --> ', len(locations)

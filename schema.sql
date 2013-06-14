@@ -141,3 +141,7 @@ CREATE TABLE tag_offset (
   status_id BIGINT NOT NULL,
   regex VARCHAR(2000) NOT NULL
 );
+
+CREATE TABLE locations (
+  location VARCHAR(2000) NOT NULL
+);
