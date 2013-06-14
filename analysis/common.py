@@ -48,5 +48,3 @@ def get_engine():
     return dataset.connect(db_url)
 
 engine = get_engine()
-
-
