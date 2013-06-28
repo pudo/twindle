@@ -39,19 +39,7 @@
     {{/each}}
   </script>
   <script id="tmpl-stats" type="text/x-handlebars-template">
-    <p>Total: <span class="label label-important">{{status_count}}</span> tweets, <span class="label label-important">{{user_count}}</span> users.</p>
-    <ul>
-      {{#each queries}}
-        <li>
-          {{#if this.is_follow}}
-          <span class="label label-info">{{this.label}}</span> <a href="https://twitter.com/{{this.filter}}">{{this.filter}}</a>
-          {{/if}}
-          {{#if this.is_track}}
-          <span class="label label-success">{{this.label}}</span> <abbr title="{{this.filter}}">terms</abbr>
-          {{/if}}
-        </li>
-      {{/each}}
-    </ul>
+    <p>Total: <span class="label label-important">{{status_count}}</span> tweets, <span class="label label-important">{{user_count}}</span> users.</p>  
   </script>
 </body>
 </html>

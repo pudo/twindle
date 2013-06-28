@@ -3,3 +3,4 @@ node_modules/*
 *.pyc
 deploy/supervisor.conf
 analysis/export/*
+analysis/dumps/*

@@ -6,10 +6,6 @@ $(function() {
 
   function updatePage() {
     $.getJSON('/stats', function(data) {
-      $.each(data.queries, function(i, q) {
-        if (q.type === 'track') data.queries[i].is_track = true;
-        if (q.type === 'follow') data.queries[i].is_follow = true;
-      });
       $areaStats.html(tmplStats(data));
     });
     $.getJSON('/latest', function(data) {

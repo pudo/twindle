@@ -5,6 +5,10 @@ exports.port = process.env.PORT or 3000
 
 exports.db_url = process.env.DB_URL or 'tcp://localhost/twitter'
 
+exports.amqp_url = process.env.AMQP_URL or 'amqp://guest:guest@localhost:5672'
+exports.amqp_queue = process.env.AMQP_QUEUE or 'twindle'
+exports.amqp_exchange = process.env.AMQP_EXCHANGE or 'twindle'
+
 assert process.env.GOOGLESPREAD_KEY?, 'You must set a search config google doc in GOOGLESPREAD_KEY'
 exports.gdoc_key = process.env.GOOGLESPREAD_KEY
 

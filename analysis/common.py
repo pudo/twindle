@@ -48,13 +48,3 @@ def get_engine():
     return dataset.connect(db_url)
 
 engine = get_engine()
-
-
-def tag_status(status, category, tag):
-    engine['tag'].insert({'status_id': status['status_id'], 'tag': tag, 'category': category})
-
-
-def dedup_tags():
-    engine.query('''DELETE FROM tag USING tag t WHERE
-        tag.status_id = t.status_id AND tag.tag = t.tag AND tag.category = t.category
-        AND tag.id < t.id''')

@@ -4,10 +4,11 @@
   "main": "track.coffee",
   "dependencies": {
     "coffee-script": "*",
-    "twitter": "*",
+    "twitter": "git://github.com/pudo/node-twitter.git",
     "pg": "*",
     "express": "*",
     "underscore": "*",
-    "tabletop": "*"
+    "tabletop": "*",
+    "amqp": "*"
   }
 }

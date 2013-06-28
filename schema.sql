@@ -124,3 +124,24 @@ CREATE TABLE tag (
 
 
 ALTER TABLE "status" ADD COLUMN retweeted_status_id BIGINT;
+
+CREATE INDEX status_id ON status (id);
+CREATE INDEX user_id ON "user" (id);
+CREATE INDEX status_user_id ON status (user_id);
+CREATE INDEX status_created_at ON status (created_at);
+CREATE INDEX user_mention_status_id ON user_mention (status_id);
+CREATE INDEX hashtags_status_id ON hashtags (status_id);
+CREATE INDEX urls_status_id ON urls (status_id);
+CREATE INDEX raw_id ON raw (id);
+
+ALTER TABLE "tag" ADD COLUMN regex VARCHAR(2000);
+
+DROP TABLE IF EXISTS tag_offset;
+CREATE TABLE tag_offset (
+  status_id BIGINT NOT NULL,
+  regex VARCHAR(2000) NOT NULL
+);
+
+CREATE TABLE locations (
+  location VARCHAR(2000) NOT NULL
+);
