@@ -1,3 +1,3 @@
-
-A simple twitter data collection engine. 
+twindle - streaming API recorder for twitter
+============================================
 
