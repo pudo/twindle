@@ -80,6 +80,8 @@ exports:
           AND s.created_at > CURRENT_DATE - INTERVAL '4 WEEKS'
         GROUP BY t.tag, to_char(s.created_at, 'YYYY-MM-DD');
 
+
+  # PROBLEM: ORDER FUER 4-WOCHEN MUSS NACH 1-WOCHEN ORDNUNG VORLIEGEN! 
   - filename: personen_erwaehnung_woche.csv
     format: csv
     query: >
