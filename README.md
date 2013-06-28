@@ -10,13 +10,11 @@ Some typical use cases for twindle include:
 
 * Tracking a specific topic, such as a hashtag or a set of terms, to explore
   the frequency of its use over time.
-* Following users to explore their activity and impact on Twitter. 
+* Following users to mine their activity and impact on Twitter (e.g. mentions, 
+  retweets, terms used). 
 
 Twindle uses a simple Google Spreadsheet (such as the one [here](https://docs.google.com/spreadsheet/ccc?key=0AplklDf0nYxWdENyTDlZYTNadUo2V2RjZGlIN2VqQWc#gid=0)) to 
-track terms and users on twitter. Users which repeatedly match the tracking 
-criteria are automatically added to twindle's search filter to keep track of their
-further communications. Note that this inbound filtering is very rough and should 
-be refined during the analysis of the collected data.
+let the user define terms and users that are to be recorded from the raw Twitter stream. Users which repeatedly match the tracking criteria are automatically added to twindle's search filter to keep track of their further communications. Note that this inbound filtering is very rough and should be refined during a second-level analysis of the collected data.
 
 Status messages are stored by twindle into a fairly simple database structure
 which can be queried for aggregate analysis. A set of included Python scripts 
