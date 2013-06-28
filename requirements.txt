@@ -1,4 +1,4 @@
-dataset
-psycopg2
-requests
-tweepy
+dataset>=0.3.6
+psycopg2==2.5.1
+requests==1.2.3
+tweepy==2.0
