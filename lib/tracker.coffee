@@ -79,7 +79,7 @@ class Tracker
     @loadQueries()
     cb = () ->
       self.loadQueries()
-    setInterval cb, 1000 * 60 * 10
+    setInterval cb, 1000 * 60 * 60
 
   loadQueries: () ->
     cur = @
