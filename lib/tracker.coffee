@@ -62,9 +62,11 @@ class QuerySet
     obj =
       language: 'de'
     if @tracks.length
-      obj.track = @tracks.join ',' 
+      track = @tracks.slice(0, 398)
+      obj.track = track.join ','
     if @follows.length
-      obj.follow = @follows.join ','
+      follow = @follows.slice(0, 99998)
+      obj.follow = follow.join ','
     return obj
 
 
@@ -117,6 +119,6 @@ class Tracker
           console.error error
       stream.on 'error', (data) ->
         error = '' + data
-        console.error data
+        console.error 'XXX ' + data
 
 exports.Tracker = Tracker
