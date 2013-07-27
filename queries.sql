@@ -67,6 +67,24 @@ SELECT COUNT(s.id), SUM(s.retweet_count), SUM(s.favorite_count)
 SELECT t.screen_name, s.user_id, COUNT(DISTINCT s.id), COUNT(r.id) AS retweets
     FROM status s
     LEFT JOIN "user" t ON t.id = s.user_id
+    LEFT JOIN lists l ON l.user_id = s.user_id
     LEFT JOIN status r ON r.retweeted_status_id = s.id
+    WHERE l.list_name = 'Politikertreppe'
     GROUP BY s.user_id, t.screen_name
     ORDER BY COUNT(r.id) DESC LIMIT 10;
+
+
+
+SELECT t.screen_name, s.user_id, COUNT(DISTINCT s.id), COUNT(r.id) AS retweets,
+    to_char(s.created_at, 'YYYY-MM-DD') AS day
+    FROM status s
+    LEFT JOIN "user" t ON t.id = s.user_id
+    LEFT JOIN lists l ON l.user_id = s.user_id
+    LEFT JOIN status r ON r.retweeted_status_id = s.id
+    WHERE
+        l.list_name = 'Politikertreppe'
+        AND s.created_at > CURRENT_DATE - INTERVAL '4 WEEKS'
+    GROUP BY s.user_id, t.screen_name, to_char(s.created_at, 'YYYY-MM-DD')
+    ORDER BY day, COUNT(r.id) DESC;
+
+
