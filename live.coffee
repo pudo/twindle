@@ -44,9 +44,8 @@ class VoteManager
         if err?
           console.log err
 
-  getVotes: (event, sample, interval, callback) ->
+  getVotes: (event, length, freq, callback) ->
     self = @
-    console.log [sample, interval, event]
     @storage.client.query "SELECT v.tag AS tag, v.sentiment AS sentiment,
         TIMESTAMP WITH TIME ZONE 'epoch' + INTERVAL '1 second' *
         round(extract('epoch' from v.created_at) / $1) * $1 AS sample,
@@ -56,7 +55,7 @@ class VoteManager
         AND v.event = $3
         GROUP BY v.tag, v.sentiment, round(extract('epoch' from created_at) / $1)
         ORDER BY sample DESC
-        ", [interval, sample, event], (err, res) ->
+        ", [freq, length, event], (err, res) ->
       if err?
         return callback null, err
       callback res.rows, null
@@ -75,16 +74,17 @@ app.get '/votes', (req, res) ->
     return res.jsonp 400,
       status: 'error'
       message: "No such event: #{req.query.event}"
-  sample = Math.min 84600, (parseInt(req.query.sample, 10) || 7200)
-  interval = Math.max 10, (parseInt(req.query.interval, 10) || 10)
-  console.log sample, interval
-  votemanager.getVotes req.query.event, sample, interval, (rows, err) ->
+  length = Math.min 84600, (parseInt(req.query.length, 10) || 7200)
+  freq = Math.max 10, (parseInt(req.query.freq, 10) || 10)
+  votemanager.getVotes req.query.event, length, freq, (rows, err) ->
     if err?
       res.jsonp 500,
         status: 'error',
         message: '' + err
     res.jsonp 200,
       status: 'ok'
+      length: length
+      freq: freq
       event: votemanager.events[req.query.event]
       data: rows
 
