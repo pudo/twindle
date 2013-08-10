@@ -1,13 +1,13 @@
 util = require 'util'
 pg = require 'pg'
-env = require './env'
+config = require './config'
 _ = require 'underscore'
 
 
 class Storage
 
   constructor: () ->
-    @client = new pg.Client env.db_url
+    @client = new pg.Client config.db_url
     @client.connect (err) ->
       if err?
         console.error err

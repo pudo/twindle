@@ -1,11 +1,11 @@
 queue = require './lib/queue'
 {Storage} = require './lib/storage'
-env = require './lib/env'
+config = require './lib/config'
 {createApp} = require './lib/web'
 
 storage = new Storage()
-queue.consume "processing" storage
+queue.consume "processing", storage
 
 app = createApp(storage)
-app.listen env.port
+app.listen config.port
 

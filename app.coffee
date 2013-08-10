@@ -1,6 +1,6 @@
 {Tracker} = require './lib/tracker'
 {Storage} = require './lib/storage'
-env = require './lib/env'
+config = require './lib/config'
 {createApp} = require './lib/web'
 
 storage = new Storage()
@@ -8,5 +8,5 @@ tracker = new Tracker(storage)
 tracker.track()
 
 app = createApp(storage)
-app.listen env.port
+app.listen config.port
 

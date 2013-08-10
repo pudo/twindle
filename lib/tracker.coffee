@@ -1,6 +1,6 @@
 tabletop = require 'tabletop'
 _ = require 'underscore'
-env = require './env'
+config = require './config'
 twitter = require './twitter'
 
 
@@ -54,13 +54,13 @@ class QuerySet
 
   track: (terms) ->
     @add terms, @tracks
-    
+
   follow: (users) ->
     @add users, @follows
 
   toObject: () ->
     obj =
-      language: 'de'
+      language: config.twitter_lang
     if @tracks.length
       track = @tracks.slice(0, 398)
       obj.track = track.join ','
@@ -85,18 +85,15 @@ class Tracker
 
   loadQueries: () ->
     cur = @
-    tabletop.init
-      key: env.gdoc_key
-      simpleSheet: true
-      callback: (d,h) ->
-        cur.handleQueries d, h
+    config.getTable (d, h) ->
+      cur.handleQueries d, h
 
   handleQueries: (data, tabletop) ->
     self = @
     query_set = new QuerySet()
     query_set.loadQueries data, () ->
-      self.storage.getMentioned query_set, () ->
-        self.updateStream query_set
+      #self.storage.getMentioned query_set, () ->
+      self.updateStream query_set
 
   updateStream: (qs) ->
     self = @
