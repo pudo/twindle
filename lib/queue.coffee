@@ -1,39 +1,44 @@
 {Storage} = require './storage'
 amqp = require 'amqp'
-config = require './config'
+env = require './env'
 
 queueOpts = 
     durable: true
     autoDelete: false
 
-connect = (callback) ->
+connect = (queue_name, callback) ->
     connection = amqp.createConnection
-        url: config.amqp_url
-        defaultExchangeName: config.amqp_exchange
+        url: env.amqp_url
+        #defaultExchangeName: env.amqp_exchange
     connection.on 'ready', () ->
-        queue = connection.queue config.amqp_queue, queueOpts
-        callback connection, queue
+        exchange = connection.exchange env.amqp_exchange, {type: 'fanout'}, () ->
+            name = env.amqp_queue + queue_name
+            connection.queue name, (queue) ->   # queueOpts
+                queue.bind exchange, ''
+                callback connection, exchange, queue
     connection.on 'error', (e) ->
         console.log e
 
-exports.consume = (storage) ->
-    connect (connection, queue) ->
-        queue.subscribe {ack: true}, (message, headers, deliveryInfo) ->
+exports.consume = (name, storage) ->
+    connect name, (connection, exchange, queue) ->
+        #queue.bind '#'
+        queue.subscribe {ack: false}, (message, headers, deliveryInfo) ->
             storage.saveStatus message, (ret) ->
-                queue.shift()
+                # queue.shift()
 
 
 class QueuedStorage extends Storage
 
     connectQueue: (callback) ->
         self = @
-        connect (conn, queue) ->
+        connect "live", (conn, exchange, queue) ->
             self.conn = conn
+            self.exchange = exchange
             callback()
 
     saveStatus: (status, callback) ->
         console.log "Queueing: #{status.id}"
-        @conn.publish config.amqp_queue, status
+        @exchange.publish env.amqp_queue, status
         callback()
 
 exports.QueuedStorage = QueuedStorage

@@ -1,5 +1,5 @@
 queue = require './lib/queue'
-config = require './lib/config'
+env = require './lib/env'
 {createApp} = require './lib/web'
 
 class LiveStorage
@@ -12,8 +12,8 @@ class LiveStorage
 
 
 storage = new LiveStorage()
-queue.consume storage
+queue.consume "live", storage
 
 # app = createApp(storage)
-# app.listen 4000#config.port
+# app.listen 4000#env.port
 

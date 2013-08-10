@@ -1,6 +1,6 @@
 tabletop = require 'tabletop'
 _ = require 'underscore'
-config = require './config'
+env = require './env'
 twitter = require './twitter'
 
 
@@ -86,7 +86,7 @@ class Tracker
   loadQueries: () ->
     cur = @
     tabletop.init
-      key: config.gdoc_key
+      key: env.gdoc_key
       simpleSheet: true
       callback: (d,h) ->
         cur.handleQueries d, h

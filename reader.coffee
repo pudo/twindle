@@ -1,6 +1,6 @@
 {Tracker} = require './lib/tracker'
 {QueuedStorage} = require './lib/queue'
-config = require './lib/config'
+env = require './lib/env'
 
 storage = new QueuedStorage()
 storage.connectQueue () ->
