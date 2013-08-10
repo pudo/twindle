@@ -24,7 +24,6 @@ class VoteManager
             name: row.filter
             label: row.label
             sentiments: s
-      console.log self.events
     self.storage = new Storage()
 
   saveStatus: (status, callback) ->
@@ -69,7 +68,6 @@ app = createApp
   getLatest: (cb) -> cb {}
 
 app.get '/votes', (req, res) ->
-  console.log req.query
   if not req.query.event or not votemanager.events[req.query.event]?
     return res.jsonp 400,
       status: 'error'
@@ -81,6 +79,16 @@ app.get '/votes', (req, res) ->
       res.jsonp 500,
         status: 'error',
         message: '' + err
+    latest = null
+    for row in rows
+      my_latest = new Date(row.sample)
+      if my_latest > latest
+        latest = my_latest
+    latest = latest.getTime()
+    etag = "#{req.query.event}-#{length}-#{freq}-#{latest}"
+    res.set
+      'ETag': etag
+      'Cache-Control': "public; max-age: #{freq}"
     res.jsonp 200,
       status: 'ok'
       length: length
