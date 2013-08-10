@@ -145,3 +145,14 @@ CREATE TABLE tag_offset (
 CREATE TABLE locations (
   location VARCHAR(2000) NOT NULL
 );
+
+
+DROP TABLE IF EXISTS "vote";
+CREATE TABLE "vote" (
+  id SERIAL PRIMARY KEY,
+  status_id BIGINT UNIQUE NOT NULL,
+  event VARCHAR(100),
+  tag VARCHAR(100),
+  sentiment INTEGER,
+  created_at TIMESTAMPTZ
+);
