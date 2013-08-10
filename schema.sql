@@ -150,7 +150,7 @@ CREATE TABLE locations (
 DROP TABLE IF EXISTS "vote";
 CREATE TABLE "vote" (
   id SERIAL PRIMARY KEY,
-  status_id BIGINT UNIQUE NOT NULL,
+  status_id BIGINT NOT NULL,
   event VARCHAR(100),
   tag VARCHAR(100),
   sentiment INTEGER,
