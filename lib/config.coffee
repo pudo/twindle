@@ -32,6 +32,5 @@ exports.getTable = (callback) ->
   tabletop.init
     key: exports.gdoc_key
     simpleSheet: true
-    callback: (d,h) ->
-      callback d, h
+    callback: callback
 

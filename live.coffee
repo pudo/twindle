@@ -67,6 +67,12 @@ app = createApp
   generateStatistics: (cb) -> cb {}
   getLatest: (cb) -> cb {}
 
+app.all '/*', (req, res, next) ->
+  res.set "Access-Control-Allow-Origin", "*"
+  res.set "Access-Control-Allow-Headers", "X-Requested-With"
+  next()
+
+
 app.get '/votes', (req, res) ->
   if not req.query.event or not votemanager.events[req.query.event]?
     return res.jsonp 400,
@@ -84,7 +90,8 @@ app.get '/votes', (req, res) ->
       my_latest = new Date(row.sample)
       if my_latest > latest
         latest = my_latest
-    latest = latest.getTime()
+    if latest isnt null
+    	latest = latest.getTime()
     etag = "#{req.query.event}-#{length}-#{freq}-#{latest}"
     res.set
       'ETag': etag
