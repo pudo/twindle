@@ -9,7 +9,7 @@ def load_searches():
     searches = {}
     for search_el in doc.findall('.//search'):
         terms = search_el.findall('.//term')
-        terms = [normalize(t.text) for t in terms]
+        terms = sorted([normalize(t.text) for t in terms])
         terms = '|'.join(terms)
         terms = terms.replace('-', '\-').replace(' ', '.*')
         terms = "(%s)" % terms
