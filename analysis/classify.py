@@ -1,4 +1,4 @@
-from common import engine
+from common import engine, normalize
 from pprint import pprint
 import sqlalchemy.sql.expression as sql
 import requests
@@ -27,12 +27,11 @@ def get_rules():
     for row in csv.DictReader(StringIO(res.content)):
         #pprint(row)
         rule = re.compile(row.get('Regex').decode('utf-8'), re.M)
-        rules[(row.get('Field'), rule)] = {
+        rules[rule] = {
             'category': row.get('Category').decode('utf-8'),
             'tag': row.get('Tag').decode('utf-8'),
             'regex': row.get('Regex').decode('utf-8')
         }
-    regexen = [d.get('regex') for (a, d) in rules.items()]
     return rules, regexen
 
 
@@ -45,8 +44,8 @@ def get_offsets(regexen):
     return offsets
 
 
-def classify_tweets():
-    rules, regexen = get_rules()
+def classify_tweets(rules):
+    regexen = [d.get('regex') for (a, d) in rules.items()]
     offsets = get_offsets(regexen)
     delete_old_tags(regexen)
     status_tbl = engine['status'].table
@@ -60,15 +59,16 @@ def classify_tweets():
     q = q.order_by(status_tbl.c.id.desc())
     for i, status in enumerate(engine.query(q)):
         max_id = max(max_id, status.get('status_id'))
-        for (field, rule), data in rules.items():
-            if offsets.get(data.get('regex')) > status.get('status_id'):
-                continue
-            m = rule.search(unicode(status.get(field)).lower())
-            #print [field,data.get('regex'), m]
-            if m is not None:
-                #print [field, data.get('regex'), m]
-                data['status_id'] = status['status_id']
-                tag_table.insert(data)
+        for rule, data in rules.items():
+            for field in ['status_text', 'user_name', 'user_screen_name']:
+                if offsets.get(data.get('regex')) > status.get('status_id'):
+                    continue
+                m = rule.search(normalize(status.get(field)))
+                #print [field,data.get('regex'), m]
+                if m is not None:
+                    #print [field, data.get('regex'), m]
+                    data['status_id'] = status['status_id']
+                    tag_table.insert(data)
         if i % 1000 == 0:
             print 'Processed: ', i
     for regex in regexen:
@@ -86,4 +86,5 @@ def delete_old_tags(regexen):
 
 
 if __name__ == '__main__':
-    classify_tweets()
+    rules = get_rules()
+    classify_tweets(rules)

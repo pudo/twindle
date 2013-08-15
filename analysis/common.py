@@ -4,6 +4,7 @@ from Queue import Queue
 from threading import Thread
 import logging
 import tweepy
+from unicodedata import normalize as ucnorm, category
 
 log = logging.getLogger(__name__)
 
@@ -12,6 +13,25 @@ def tweepy_api():
     auth = tweepy.OAuthHandler(os.environ.get('CONSUMER_KEY'), os.environ.get('CONSUMER_SECRET'))
     auth.set_access_token(os.environ.get('ACCESS_TOKEN'), os.environ.get('ACCESS_SECRET'))
     return tweepy.API(auth)
+
+
+def normalize(text):
+    if not isinstance(text, unicode):
+        text = unicode(text)
+    decomposed = ucnorm('NFKD', text)
+    filtered = []
+    for char in decomposed:
+        cat = category(char)
+        if char == "'" or cat.startswith('M') or cat.startswith('S'):
+            continue
+        elif cat.startswith('L') or cat.startswith('N'):
+            filtered.append(char)
+        else:
+            filtered.append(' ')
+    text = u''.join(filtered)
+    while '  ' in text:
+        text = text.replace('  ', ' ')
+    return ucnorm('NFKC', text).strip().lower()
 
 
 def unthreaded(items, func):
