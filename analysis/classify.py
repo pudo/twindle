@@ -74,7 +74,7 @@ def classify_tweets(rules):
                          status_tbl.c.id >= min(offsets.values()),
                          status_tbl.c.created_at > dt))
     q = q.order_by(status_tbl.c.id.asc())
-    
+
     offset = 0
     while True:
         engine.begin()
