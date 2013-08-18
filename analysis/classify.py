@@ -80,7 +80,7 @@ def classify_tweets(rules):
         engine.begin()
         lq = q.limit(PAGE_SIZE).offset(offset)
         offset += PAGE_SIZE
-        print offset, limit
+        print offset, PAGE_SIZE
         has_records = False
         for i, status in enumerate(engine.query(lq)):
             has_records = True
