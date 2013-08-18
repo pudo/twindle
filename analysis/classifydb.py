@@ -77,6 +77,7 @@ def classify_tweets(rules):
         """)
 
     for rule in rules.values():
+        print rule
         engine.begin()
         engine.query(q, **rule)
         offset_table.delete(regex=rule['regex'])
