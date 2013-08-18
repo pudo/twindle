@@ -18,7 +18,7 @@ class QuerySet
       _queries = queries.slice 1
       if _queries.length
         return self.loadQueries _queries, callback
-      return callback()  
+      return callback()
 
     if query.type is 'track'
       self.track query.filter
@@ -92,8 +92,11 @@ class Tracker
     self = @
     query_set = new QuerySet()
     query_set.loadQueries data, () ->
-      #self.storage.getMentioned query_set, () ->
-      self.updateStream query_set
+      if config.twitter_dragnet
+        self.storage.getMentioned query_set, () ->
+          self.updateStream query_set
+      else
+        self.updateStream query_set
 
   updateStream: (qs) ->
     self = @

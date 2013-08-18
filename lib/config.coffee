@@ -11,6 +11,7 @@ exports.amqp_queue = process.env.AMQP_QUEUE or 'twindle2'
 exports.amqp_exchange = process.env.AMQP_EXCHANGE or 'twindle2'
 
 exports.twitter_lang = process.env.TWITTER_LANG or ''
+exports.twitter_dragnet = process.env.TWITTER_DRAGNET and process.env.TWITTER_DRAGNET.length > 0
 
 assert process.env.GOOGLESPREAD_KEY?, 'You must set a search config google doc in GOOGLESPREAD_KEY'
 exports.gdoc_key = process.env.GOOGLESPREAD_KEY
