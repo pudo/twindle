@@ -1,0 +1,53 @@
+# for use with http://dataset.rtfd.org
+
+common:
+  database: 'postgresql://localhost/spon_twitter'
+  prefix: 'export'
+  format: 'json'
+
+exports:
+  - filename: aktivitaet.json
+    query: >
+      SELECT u.screen_name AS screen_name, u.name AS name,
+        to_char(s.created_at::date, 'DD.MM.YYYY') AS datum,
+        COUNT(s.id) AS tweets, 0 AS retweets
+        FROM "user" u
+            LEFT JOIN status s ON s.user_id = u.id
+        WHERE
+            s.created_at > NOW() - INTERVAL '28 days'
+            AND u.id IN (
+                SELECT iu.id
+                    FROM lists il
+                        LEFT JOIN "user" iu ON iu.id = il.user_id
+                        LEFT JOIN status ins ON ins.user_id = iu.id
+                    WHERE
+                        il.list_name IN ('Politikertreppe', 'bundestagsabgeordnete')
+                        AND ins.created_at > NOW() - INTERVAL '7 days'
+                    GROUP BY iu.id
+                    ORDER BY COUNT(ins.id) DESC
+                    LIMIT 15
+                )
+        GROUP BY u.screen_name, u.name, s.created_at::date
+        ORDER BY COUNT(s.id) DESC;
+
+  - filename: mentions.json
+    query: >
+      SELECT t.tag AS name, t.tag AS screen_name, COUNT(s.id) AS tweets,
+        to_char(s.created_at::date, 'DD.MM.YYYY') AS datum, 0 AS retweets
+        FROM tag t 
+        LEFT JOIN status s ON s.id = t.status_id
+        WHERE
+            t.category = 'person'
+            AND s.created_at > NOW() - INTERVAL '28 days'
+            AND t.tag IN (
+                SELECT it.tag
+                    FROM tag it 
+                    LEFT JOIN status ins ON ins.id = it.status_id
+                    WHERE it.category = 'person' 
+                        AND ins.created_at > NOW() - INTERVAL '7 days'
+                    GROUP BY it.tag
+                    ORDER BY COUNT(ins.id) DESC
+                    LIMIT 15
+            )
+        GROUP BY t.tag, s.created_at::date
+        ORDER BY COUNT(s.id) DESC;
