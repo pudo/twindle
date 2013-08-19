@@ -4,9 +4,10 @@ common:
   database: 'postgresql://localhost/spon_twitter'
   prefix: 'export'
   format: 'json'
+  callback: 'ranking_layer'
 
 exports:
-  - filename: aktivitaet.json
+  - filename: aktivitaet.jsonp
     meta:
       title: "Welche Politiker twittern am meisten?"
       description: "Die Aktivitätstreppe zeigt, welche prominenten Politiker und Bundestagsabgeordneten am aktivsten auf Twitter kommunizieren."
@@ -33,7 +34,7 @@ exports:
         GROUP BY u.screen_name, u.name, s.created_at::date
         ORDER BY COUNT(s.id) DESC;
 
-  - filename: mentions.json
+  - filename: mentions.jsonp
     meta:
       title: "Welche Politiker werden auf Twitter am meisten erwähnt?"
       description: "Hier wird erfasst, wie häufig ein Politiker auf Twitter erwähnt wird - unabhängig davon, ob er oder sie selbst bei Twitter einen Account hat."
