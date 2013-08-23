@@ -10,7 +10,7 @@ exports:
   - filename: aktivitaet.jsonp
     meta:
       title: "Welche Politiker twittern am meisten?"
-      description: "Die Aktivitätstreppe zeigt, welche prominenten Politiker und Bundestagsabgeordneten am aktivsten auf Twitter kommunizieren und am meisten re-tweeted werden."
+      description: "Unsere Treppe zeigt, welche Politiker am aktivsten auf Twitter kommunizieren."
     query: >
       SELECT u.screen_name AS screen_name, u.name AS name,
         to_char(s.created_at::date, 'DD.MM.YYYY') AS datum,
@@ -39,7 +39,7 @@ exports:
   - filename: mentions.jsonp
     meta:
       title: "Welche Politiker werden auf Twitter am meisten erwähnt?"
-      description: "Hier wird erfasst, wie häufig ein Politiker auf Twitter erwähnt wird - unabhängig davon, ob er oder sie selbst bei Twitter einen Account hat."
+      description: "Hier wird dargestellt, wie häufig Politiker auf Twitter genannt werden - unabhängig davon, ob sie selbst einen Account haben."
     query: >
       SELECT t.tag AS name, t.tag AS screen_name, COUNT(s.id) AS tweets,
         to_char(s.created_at::date, 'DD.MM.YYYY') AS datum, 0 AS retweets
