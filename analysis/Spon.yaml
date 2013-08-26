@@ -60,3 +60,28 @@ exports:
             )
         GROUP BY t.tag, s.created_at::date
         ORDER BY COUNT(s.id) DESC;
+
+  - filename: themen.jsonp
+    meta:
+      title: "Welche Themen werden am meisten diskutiert?"
+      description: ""
+    query: >
+      SELECT t.tag AS topic, COUNT(s.id) AS tweets,
+        to_char(s.created_at::date, 'DD.MM.YYYY') AS datum, 0 AS retweets
+        FROM tag t 
+        LEFT JOIN status s ON s.id = t.status_id
+        WHERE
+            t.category = 'thema'
+            AND s.created_at > NOW() - INTERVAL '28 days'
+            AND t.tag IN (
+                SELECT it.tag
+                    FROM tag it 
+                    LEFT JOIN status ins ON ins.id = it.status_id
+                    WHERE it.category = 'thema' 
+                        AND ins.created_at > NOW() - INTERVAL '7 days'
+                    GROUP BY it.tag
+                    ORDER BY COUNT(ins.id) DESC
+                    LIMIT 15
+            )
+        GROUP BY t.tag, s.created_at::date
+        ORDER BY COUNT(s.id) DESC;
