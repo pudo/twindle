@@ -19,11 +19,11 @@ def dump_batches():
     for row in raw_table.find(_limit=BATCH_SIZE, order_by=['id']):
         if min_id is None:
             min_id = row['id']
-        data.append(json.loads(row['json']))
+        data.append(row['json'])
         raw_table.delete(id=row['id'])
     log.info("Saving file...")
     fh = open('dumps/raw_%s.json' % min_id, 'wb')
-    json.dump(data, fh)
+    fh.write('\n'.join(data))
     fh.close()
     engine.commit()
     return True
