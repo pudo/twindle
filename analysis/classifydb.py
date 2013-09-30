@@ -50,7 +50,7 @@ def get_offsets(regexen):
 def classify_tweets(rules):
     regexen = [d.get('regex') for (a, d) in rules.items()]
     offsets = get_offsets(regexen)
-    delete_old_tags(regexen)
+    delete_old_tags(rules)
 
     q = text("""
         INSERT INTO tag (category, tag, status_id, classified_at, regex) 
@@ -87,8 +87,9 @@ def classify_tweets(rules):
     dedup_tags()
 
 
-def delete_old_tags(regexen):
+def delete_old_tags(rules):
     engine.begin()
+    regexen = [d.get('regex') for (a, d) in rules.items()]
     for row in tag_table.distinct('regex'):
         if row.get('regex') not in regexen:
             tag_table.delete(regex=row.get('regex'))
