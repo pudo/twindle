@@ -23,7 +23,8 @@ def dump_batches():
         raw_table.delete(id=row['id'])
     log.info("Saving file...")
     fh = open('dumps/raw_%s.json' % min_id, 'wb')
-    fh.write('\n'.join(data))
+    data = '\n'.join(data)
+    fh.write(data.encode('utf-8'))
     fh.close()
     engine.commit()
     return True
